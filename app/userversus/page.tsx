@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useCallback } from "react";
 import { Difficulty, GameState, Player, Round } from "./types";
 
