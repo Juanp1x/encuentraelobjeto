@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useVersus, tokenize, stripPunct, findTargetTokenIdx } from "./ versus/page";
-import { Difficulty } from "./ versus/types";
+import { useVersus, tokenize, stripPunct, findTargetTokenIdx } from "./versus/page";
+import { Difficulty } from "./versus/types";
 
 // ─── Styles (inline so no extra CSS file needed) ──────────────────────────────
 
