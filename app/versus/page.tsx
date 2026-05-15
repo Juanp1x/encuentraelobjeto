@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 import {
   useVersus,
   tokenize,
@@ -7,12 +9,54 @@ import {
   findTargetTokenIdx,
 } from "./game";
 
-export default function VersusPage() {
-  const { currentRound } = useVersus();
+import { Difficulty } from "./types";
 
-  if (!currentRound) {
-    return <div>No hay ronda.</div>;
+export default function VersusPage() {
+  const {
+    state,
+    currentRound,
+    startGame,
+    clickWord,
+    requestHint,
+  } = useVersus();
+
+  const [started, setStarted] = useState(false);
+
+  const start = () => {
+    startGame("Jugador 1", "Jugador 2", "fácil", 6);
+    setStarted(true);
+  };
+
+  if (!started) {
+    return (
+      <div
+        style={{
+          maxWidth: 600,
+          margin: "0 auto",
+          padding: "2rem",
+        }}
+      >
+        <h1>⚔️ Modo Versus</h1>
+
+        <button
+          onClick={start}
+          style={{
+            padding: "12px 20px",
+            borderRadius: 10,
+            border: "none",
+            background: "#2563eb",
+            color: "#fff",
+            cursor: "pointer",
+            fontWeight: 700,
+          }}
+        >
+          Iniciar partida
+        </button>
+      </div>
+    );
   }
+
+  if (!currentRound) return null;
 
   const tokens = tokenize(currentRound.scene);
 
@@ -24,54 +68,74 @@ export default function VersusPage() {
   return (
     <div
       style={{
-        maxWidth: 700,
+        maxWidth: 800,
         margin: "0 auto",
         padding: "2rem",
       }}
     >
-      <h1>⚔️ Modo Versus</h1>
+      <h1>⚔️ Versus</h1>
 
       <p>
-        Encuentra el objeto:
+        Busca:
         <b> {currentRound.target}</b>
       </p>
 
-      <div
+      {state.showHint && (
+        <p>💡 {currentRound.hint}</p>
+      )}
+
+      <button
+        onClick={requestHint}
         style={{
-          border: "1px solid #ddd",
-          padding: 20,
-          borderRadius: 10,
-          marginTop: 20,
+          marginBottom: 20,
+          padding: "8px 14px",
+          borderRadius: 8,
+          border: "1px solid #ccc",
+          cursor: "pointer",
         }}
       >
-        <p style={{ lineHeight: 2 }}>
-          {tokens.map((tok, i) => {
-            if (/^\s+$/.test(tok)) {
-              return <span key={i}>{tok}</span>;
-            }
+        Mostrar pista
+      </button>
 
-            const core = stripPunct(tok);
+      <div
+        style={{
+          background: "#fff",
+          border: "1px solid #ddd",
+          borderRadius: 12,
+          padding: 20,
+          lineHeight: 2,
+        }}
+      >
+        {tokens.map((tok, i) => {
+          if (/^\s+$/.test(tok)) {
+            return <span key={i}>{tok}</span>;
+          }
 
-            const isTarget =
-              core.toLowerCase() ===
-              currentRound.target.toLowerCase();
+          const core = stripPunct(tok);
 
-            return (
-              <span
-                key={i}
-                style={{
-                  background:
-                    i === targetIdx
-                      ? "#fde68a"
-                      : "transparent",
-                  cursor: "pointer",
-                }}
-              >
-                {tok}
-              </span>
-            );
-          })}
-        </p>
+          if (core.length <= 2) {
+            return <span key={i}>{tok}</span>;
+          }
+
+          const isFound = i === state.foundIdx;
+
+          return (
+            <span
+              key={i}
+              onClick={() => clickWord(i, targetIdx)}
+              style={{
+                cursor: "pointer",
+                padding: "2px 4px",
+                borderRadius: 4,
+                background: isFound
+                  ? "#86efac"
+                  : "transparent",
+              }}
+            >
+              {tok}
+            </span>
+          );
+        })}
       </div>
     </div>
   );

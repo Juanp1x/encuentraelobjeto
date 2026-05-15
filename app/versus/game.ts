@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Difficulty, GameState, Player, Round } from "./types";
 
 export const ROUNDS: Record<Difficulty, Round[]> = {
@@ -9,7 +9,13 @@ export const ROUNDS: Record<Difficulty, Round[]> = {
       target: "paraguas",
       hint: "Te protege de la lluvia",
       scene:
-        "Era una mañana gris y nublada. Una señora abrió su paraguas rojo mientras caminaba por el parque.",
+        "Era una mañana gris y nublada en el parque. Los niños corrían entre los charcos mientras sus madres los llamaban desde los bancos. Una señora mayor sacó su paraguas rojo del bolso antes de que empezara a llover.",
+    },
+    {
+      target: "linterna",
+      hint: "Da luz en la oscuridad",
+      scene:
+        "El campamento quedó en silencio cuando cayó la noche. Marcos buscó dentro de su mochila y encontró la linterna justo a tiempo.",
     },
   ],
 
@@ -18,7 +24,7 @@ export const ROUNDS: Record<Difficulty, Round[]> = {
       target: "brújula",
       hint: "Marca el norte",
       scene:
-        "Los exploradores caminaban por el bosque mientras María observaba la brújula.",
+        "El grupo de senderistas caminaba por el bosque. María sacó la brújula de su chaleco y comprobó la dirección.",
     },
   ],
 
@@ -27,7 +33,7 @@ export const ROUNDS: Record<Difficulty, Round[]> = {
       target: "compás",
       hint: "Se usa para dibujar círculos",
       scene:
-        "En la mesa del salón había un compás metálico junto a varios planos.",
+        "El aula de dibujo técnico tenía mesas llenas de reglas y lápices. En un cajón abierto había un compás oxidado.",
     },
   ],
 };
@@ -55,10 +61,7 @@ export function findTargetTokenIdx(
   return -1;
 }
 
-const DEFAULT_PLAYER = (
-  id: 1 | 2,
-  name: string
-): Player => ({
+const DEFAULT_PLAYER = (id: 1 | 2, name: string): Player => ({
   id,
   name,
   score: 0,
@@ -66,21 +69,25 @@ const DEFAULT_PLAYER = (
   wins: 0,
 });
 
+const TRIES_PER_ROUND = 3;
+
 export function useVersus() {
-  const [player1] = useState<Player>(
+  const [player1, setPlayer1] = useState<Player>(
     DEFAULT_PLAYER(1, "Jugador 1")
   );
 
-  const [player2] = useState<Player>(
+  const [player2, setPlayer2] = useState<Player>(
     DEFAULT_PLAYER(2, "Jugador 2")
   );
 
-  const [state] = useState<GameState>({
-    phase: "playing",
+  const [currentRound, setCurrentRound] = useState<Round | null>(null);
+
+  const [state, setState] = useState<GameState>({
+    phase: "setup",
     currentPlayer: 1,
-    roundNumber: 1,
+    roundNumber: 0,
     totalRounds: 6,
-    tries: 3,
+    tries: TRIES_PER_ROUND,
     showHint: false,
     foundIdx: null,
     wrongIdxs: new Set(),
@@ -90,19 +97,82 @@ export function useVersus() {
     diff: "fácil",
   });
 
-  const [currentRound] = useState<Round>(
-    ROUNDS["fácil"][0]
+  const startGame = useCallback(
+    (
+      p1Name: string,
+      p2Name: string,
+      diff: Difficulty,
+      rounds: number
+    ) => {
+      setPlayer1(DEFAULT_PLAYER(1, p1Name));
+      setPlayer2(DEFAULT_PLAYER(2, p2Name));
+
+      setCurrentRound(ROUNDS[diff][0]);
+
+      setState({
+        phase: "playing",
+        currentPlayer: 1,
+        roundNumber: 1,
+        totalRounds: rounds,
+        tries: TRIES_PER_ROUND,
+        showHint: false,
+        foundIdx: null,
+        wrongIdxs: new Set(),
+        revealed: false,
+        feedback: null,
+        roundWinner: null,
+        diff,
+      });
+    },
+    []
   );
+
+  const clickWord = useCallback((idx: number, targetIdx: number) => {
+    if (idx === targetIdx) {
+      setState((s) => ({
+        ...s,
+        foundIdx: idx,
+      }));
+    }
+  }, []);
+
+  const requestHint = useCallback(() => {
+    setState((s) => ({
+      ...s,
+      showHint: true,
+    }));
+  }, []);
+
+  const nextRound = useCallback(() => {}, []);
+
+  const resetGame = useCallback(() => {
+    setState({
+      phase: "setup",
+      currentPlayer: 1,
+      roundNumber: 0,
+      totalRounds: 6,
+      tries: TRIES_PER_ROUND,
+      showHint: false,
+      foundIdx: null,
+      wrongIdxs: new Set(),
+      revealed: false,
+      feedback: null,
+      roundWinner: null,
+      diff: "fácil",
+    });
+
+    setCurrentRound(null);
+  }, []);
 
   return {
     state,
     player1,
     player2,
     currentRound,
-    startGame: () => {},
-    clickWord: () => {},
-    nextRound: () => {},
-    requestHint: () => {},
-    resetGame: () => {},
+    startGame,
+    clickWord,
+    nextRound,
+    requestHint,
+    resetGame,
   };
 }
