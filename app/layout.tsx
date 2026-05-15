@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Encuentra el objeto",
-  description: "Juego de encontrar objetos escondidos en escenas",
+  description: "Juego de encontrar objetos escondidos",
 };
 
 export default function RootLayout({
@@ -26,9 +26,9 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable}`}
     >
-      <body className="min-h-full flex flex-col">
+      <body>
         <nav
           style={{
             borderBottom: "1px solid #e5e7eb",
@@ -38,51 +38,19 @@ export default function RootLayout({
             alignItems: "center",
             justifyContent: "space-between",
             background: "#fff",
-            position: "sticky",
-            top: 0,
-            zIndex: 50,
           }}
         >
-          <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ fontSize: 18 }}>🔍</span>
-            <span style={{ fontWeight: 800, fontSize: 15, color: "#111827" }}>
-              Encuentra el objeto
-            </span>
+          <Link href="/" style={{ textDecoration: "none" }}>
+            🔍 Encuentra el objeto
           </Link>
 
-          <div style={{ display: "flex", gap: 6 }}>
-            <Link
-              href="/"
-              style={{
-                padding: "5px 14px",
-                borderRadius: 20,
-                fontSize: 13,
-                fontWeight: 700,
-                textDecoration: "none",
-                color: "#6b7280",
-                border: "1.5px solid transparent",
-              }}
-            >
-              🧩 Un jugador
-            </Link>
-            <Link
-              href="/versus"
-              style={{
-                padding: "5px 14px",
-                borderRadius: 20,
-                fontSize: 13,
-                fontWeight: 700,
-                textDecoration: "none",
-                color: "#6b7280",
-                border: "1.5px solid transparent",
-              }}
-            >
-              ⚔️ Versus
-            </Link>
+          <div style={{ display: "flex", gap: 10 }}>
+            <Link href="/">Inicio</Link>
+            <Link href="/versus">Versus</Link>
           </div>
         </nav>
 
-        <main className="flex-1">{children}</main>
+        <main>{children}</main>
       </body>
     </html>
   );
