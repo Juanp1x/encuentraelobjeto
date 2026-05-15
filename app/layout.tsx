@@ -1,8 +1,6 @@
-"use client";
-
+import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -15,35 +13,16 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+export const metadata: Metadata = {
+  title: "Encuentra el objeto",
+  description: "Juego de encontrar objetos escondidos en escenas",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const pathname = usePathname();
-
-  const navLink = (href: string, label: string) => {
-    const isActive = href === "/" ? pathname === "/" : pathname.startsWith(href);
-    return (
-      <Link
-        href={href}
-        style={{
-          padding: "5px 14px",
-          borderRadius: 20,
-          fontSize: 13,
-          fontWeight: 700,
-          textDecoration: "none",
-          background: isActive ? "#dbeafe" : "transparent",
-          color: isActive ? "#1e40af" : "#6b7280",
-          border: `1.5px solid ${isActive ? "#93c5fd" : "transparent"}`,
-          transition: "all .15s",
-        }}
-      >
-        {label}
-      </Link>
-    );
-  };
-
   return (
     <html
       lang="es"
@@ -72,8 +51,34 @@ export default function RootLayout({
           </Link>
 
           <div style={{ display: "flex", gap: 6 }}>
-            {navLink("/", "🧩 Un jugador")}
-            {navLink("/versus", "⚔️ Versus")}
+            <Link
+              href="/"
+              style={{
+                padding: "5px 14px",
+                borderRadius: 20,
+                fontSize: 13,
+                fontWeight: 700,
+                textDecoration: "none",
+                color: "#6b7280",
+                border: "1.5px solid transparent",
+              }}
+            >
+              🧩 Un jugador
+            </Link>
+            <Link
+              href="/versus"
+              style={{
+                padding: "5px 14px",
+                borderRadius: 20,
+                fontSize: 13,
+                fontWeight: 700,
+                textDecoration: "none",
+                color: "#6b7280",
+                border: "1.5px solid transparent",
+              }}
+            >
+              ⚔️ Versus
+            </Link>
           </div>
         </nav>
 
