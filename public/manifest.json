@@ -1,23 +1,22 @@
 {
-    "name": "Encuentra la palabra en el parrafo en lo mas rapido",
-    "short_name": "encuentraword",
-    "description": "Este es un juego",
-    "start_url": "/",
-    "display": "standalone",
-    "background_color": "#0a84ff",
-    "theme_color": "#0a84ff",
-    "icons": [
-        {
-            "src": "https://st4.depositphotos.com/1915171/22999/v/1600/depositphotos_229994122-stock-illustration-search-text-line-icon-find.jpg",
-            "sizes": "192x192",
-            "type": "image/png",
-            "purpose": "any"
-        },
-        {
-            "src": "https://static-blog.onlyoffice.com/wp-content/uploads/2022/10/find-and-replace.png",
-            "sizes": "512x512",
-            "type": "image/png",
-            "purpose": "maskable"
-        }
-    ]
+  "name": "Encuentra el objeto",
+  "short_name": "Objeto",
+  "description": "Juego de encontrar objetos escondidos",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }

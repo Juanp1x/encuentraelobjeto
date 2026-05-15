@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Encuentra el objeto",
-  description: "Juego de encontrar objetos escondidos en escenas",
+  description: "Juego de encontrar objetos escondidos",
   manifest: "/manifest.json",
 };
 
